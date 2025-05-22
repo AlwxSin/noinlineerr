@@ -26,7 +26,7 @@ if err != nil {
 
 ## Install
 ```bash
-go install github.com/AlwxSin/noinlineerr@latest
+go install github.com/AlwxSin/noinlineerr/cmd/noinlineerr@latest
 ```
 
 ---
