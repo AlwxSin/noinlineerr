@@ -47,5 +47,5 @@ func run(pass *analysis.Pass) (any, error) {
 			return true
 		})
 	}
-	return nil, nil
+	return nil, nil //nolint:nilnil // nothing to return
 }
