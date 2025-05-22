@@ -1,6 +1,6 @@
 project_name: noinlineerr
 builds:
-  - main: ./main.go
+  - main: ./cmd/noinlineerr/main.go
     binary: noinlineerr
     goos:
       - linux
