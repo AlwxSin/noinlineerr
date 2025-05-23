@@ -1,6 +1,5 @@
 version: "2"
-run:
-  tests: true
+
 linters:
   default: all
   disable:
@@ -8,9 +7,6 @@ linters:
     - depguard
     - err113
     - exhaustruct
-    - gochecknoglobals
-    - gochecknoinits
-    - godox
     - nlreturn
     - nonamedreturns
     - paralleltest
@@ -18,7 +14,7 @@ linters:
     - testpackage
     - varnamelen
     - wrapcheck
-    - wsl
+
   settings:
     cyclop:
       max-complexity: 30
@@ -70,9 +66,7 @@ linters:
       min-complexity: 30
     godox:
       keywords:
-        - NOTE
-        - OPTIMIZE
-        - HACK
+        - FIXME
     govet:
       enable:
         - atomicalign
@@ -80,13 +74,6 @@ linters:
         - shadow
       enable-all: false
       disable-all: false
-      settings:
-        printf:
-          funcs:
-            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
-            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
-            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
-            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
     ireturn:
       allow:
         - anon
@@ -94,22 +81,12 @@ linters:
         - empty
         - stdlib
         - generic
-        - github.com/doug-martin/goqu/v9/exp.*
-        - github.com/AlwxSin/simplegen.SpecData
-        - github.com/99designs/gqlgen/graphql.Marshaler
-        - github.com/Khan/genqlient/graphql.Client
-        - utils.GenericSyncMap
     lll:
       line-length: 160
-      tab-width: 1
     misspell:
       locale: US
-      ignore-rules:
-        - someword
     mnd:
       ignored-functions:
-        - ^math\.
-        - ^http\.StatusText$
         - ^strings\.SplitN
     nakedret:
       max-func-lines: 30
@@ -146,18 +123,15 @@ linters:
     whitespace:
       multi-if: false
       multi-func: false
+
   exclusions:
-    generated: lax
     presets:
       - comments
       - common-false-positives
-      - legacy
       - std-error-handling
     rules:
-      - linters:
-          - lll
-        path: resolvers\.go
-      - linters:
+      - path: _test\.go
+        linters:
           - bodyclose
           - containedctx
           - contextcheck
@@ -174,16 +148,11 @@ linters:
           - nilnil
           - unparam
           - gosmopolitan
-        path: _test\.go
-    paths:
-      - http/internal
-      - third_party$
-      - builtin$
-      - examples$
+
+
 formatters:
   enable:
     - gci
-    - gofmt
     - gofumpt
     - goimports
   settings:
@@ -191,17 +160,9 @@ formatters:
       sections:
         - standard
         - default
-        - prefix(noinlineerr)
+        - localmodule
         - blank
         - dot
-    gofmt:
-      simplify: true
     gofumpt:
-      module-path: noinlineerr
-  exclusions:
-    generated: lax
-    paths:
-      - http/internal
-      - third_party$
-      - builtin$
-      - examples$
+      extra-rules: true
+
