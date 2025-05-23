@@ -31,11 +31,11 @@ func valid() error {
 }
 
 func invalid() error {
-	if err := doSomething(); err != nil { // want "avoid inline error handling using `if err := ...; err != nil; use plain assignment `err := ..."
+	if err := doSomething(); err != nil { // want "avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`"
 		return err
 	}
 
-	if err := doSmthManyArgs(0, // want "avoid inline error handling using `if err := ...; err != nil; use plain assignment `err := ..."
+	if err := doSmthManyArgs(0, // want "avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`"
 		0,
 		0,
 		0,
@@ -43,7 +43,7 @@ func invalid() error {
 		return err
 	}
 
-	if _, err := doSmthMultipleReturn(); err != nil { // want "avoid inline error handling using `if err := ...; err != nil; use plain assignment `err := ..."
+	if _, err := doSmthMultipleReturn(); err != nil { // want "avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`"
 		_ = false
 		return err
 	}

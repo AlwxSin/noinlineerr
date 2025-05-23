@@ -14,7 +14,7 @@ func NewAnalyzer() *analysis.Analyzer {
 
 	return &analysis.Analyzer{
 		Name: "noinlineerr",
-		Doc:  "Dissallows inline error handling using `if err := ...; err != nil",
+		Doc:  "Disallows inline error handling using `if err := ...; err != nil`",
 		Run:  a.run,
 	}
 }
@@ -28,7 +28,7 @@ func (a *analyzer) run(pass *analysis.Pass) (any, error) {
 				return true
 			}
 
-			// check if the init cluase is an assignment
+			// check if the init clause is an assignment
 			assignStmt, ok := ifStmt.Init.(*ast.AssignStmt)
 			if !ok {
 				return true
@@ -50,7 +50,7 @@ func (a *analyzer) run(pass *analysis.Pass) (any, error) {
 				// report usage of inline error assignment
 				pass.Reportf(
 					ident.Pos(),
-					"avoid inline error handling using `if err := ...; err != nil; use plain assignment `err := ...",
+					"avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`",
 				)
 			}
 			return true
