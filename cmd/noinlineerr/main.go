@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/AlwxSin/noinlineerr"
 	"golang.org/x/tools/go/analysis/singlechecker"
+
+	"github.com/AlwxSin/noinlineerr"
 )
 
 func main() {
