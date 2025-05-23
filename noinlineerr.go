@@ -7,13 +7,19 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
-var Analyzer = &analysis.Analyzer{
-	Name: "noinlineerr",
-	Doc:  "Dissallows inline error handling using `if err := ...; err != nil",
-	Run:  run,
+type analyzer struct{}
+
+func NewAnalyzer() *analysis.Analyzer {
+	a := &analyzer{}
+
+	return &analysis.Analyzer{
+		Name: "noinlineerr",
+		Doc:  "Dissallows inline error handling using `if err := ...; err != nil",
+		Run:  a.run,
+	}
 }
 
-func run(pass *analysis.Pass) (any, error) {
+func (a *analyzer) run(pass *analysis.Pass) (any, error) {
 	for _, file := range pass.Files {
 		ast.Inspect(file, func(n ast.Node) bool {
 			// look for if statements with an Init clause
@@ -42,7 +48,10 @@ func run(pass *analysis.Pass) (any, error) {
 				}
 
 				// report usage of inline error assignment
-				pass.Reportf(ident.Pos(), "avoid inline error handling using `if err := ...; err != nil; use plain assignment `err := ...")
+				pass.Reportf(
+					ident.Pos(),
+					"avoid inline error handling using `if err := ...; err != nil; use plain assignment `err := ...",
+				)
 			}
 			return true
 		})
