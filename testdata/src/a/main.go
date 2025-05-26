@@ -1,5 +1,10 @@
 package a
 
+import (
+	"fmt"
+	"strconv"
+)
+
 func doSomething() error {
 	return nil
 }
@@ -27,6 +32,11 @@ func valid() error {
 	if err != nil {
 		return err
 	}
+
+	if ok, _ := strconv.ParseBool("1"); ok {
+		fmt.Println("ok")
+	}
+
 	return nil
 }
 

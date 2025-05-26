@@ -49,7 +49,7 @@ func run(pass *analysis.Pass) (any, error) {
 
 			// confirm type is error
 			obj := pass.TypesInfo.ObjectOf(ident)
-			if obj == nil || !strings.Contains(obj.Type().String(), "error") {
+			if obj == nil || !strings.Contains(obj.Type().String(), "error") || ident.Name == "_" {
 				continue
 			}
 
