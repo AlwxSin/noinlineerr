@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"go/ast"
 	"go/printer"
-	"strings"
+	"go/types"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
@@ -32,7 +32,13 @@ func run(pass *analysis.Pass) (any, error) {
 		(*ast.IfStmt)(nil),
 	}
 
-	insp.Preorder(nodeFilter, func(n ast.Node) {
+	insp.Preorder(nodeFilter, inlineErrorInspector(pass))
+
+	return nil, nil //nolint:nilnil // nothing to return
+}
+
+func inlineErrorInspector(pass *analysis.Pass) func(n ast.Node) {
+	return func(n ast.Node) {
 		ifStmt, ok := n.(*ast.IfStmt)
 		if !ok || ifStmt.Init == nil {
 			return
@@ -53,12 +59,12 @@ func run(pass *analysis.Pass) (any, error) {
 
 			// confirm type is error
 			obj := pass.TypesInfo.ObjectOf(ident)
-			if obj == nil || !strings.Contains(obj.Type().String(), "error") || ident.Name == "_" {
+			if !isError(obj) || ident.Name == "_" {
 				continue
 			}
 
 			if len(assignStmt.Lhs) != 1 {
-				// if there are more than 1 assignment then we can do a shadow conflict with other variables
+				// if there are more than 1 assignment then we can make a shadow conflict with other variables
 				// so don't do anything beside simple error message
 				pass.Reportf(ident.Pos(), errMessage)
 				return
@@ -98,7 +104,15 @@ func run(pass *analysis.Pass) (any, error) {
 				},
 			})
 		}
-	})
+	}
+}
 
-	return nil, nil //nolint:nilnil // nothing to return
+func isError(obj types.Object) bool {
+	if obj == nil {
+		return false
+	}
+
+	errorType := types.Universe.Lookup("error").Type()
+
+	return types.AssignableTo(obj.Type(), errorType)
 }

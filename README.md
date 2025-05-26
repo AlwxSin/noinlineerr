@@ -37,6 +37,8 @@ go install github.com/AlwxSin/noinlineerr/cmd/noinlineerr@latest
 noinlineerr ./...
 ```
 
+⚠️ Note: the linter detects inline error assignments only when the error variable is explicitly typed or deducible. It doesn't handle dynamically typed interfaces (e.g. foo().Err() where Err() returns error via interface).
+
 ---
 
 ## Development
