@@ -7,5 +7,5 @@ import (
 )
 
 func TestAnalyzer(t *testing.T) {
-	analysistest.Run(t, analysistest.TestData(), NewAnalyzer(), "a")
+	analysistest.RunWithSuggestedFixes(t, analysistest.TestData(), NewAnalyzer(), "a")
 }

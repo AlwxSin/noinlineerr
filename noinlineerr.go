@@ -1,13 +1,17 @@
 package noinlineerr
 
 import (
+	"bytes"
 	"go/ast"
+	"go/printer"
 	"strings"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 )
+
+const errMessage = "avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`"
 
 func NewAnalyzer() *analysis.Analyzer {
 	return &analysis.Analyzer{
@@ -53,11 +57,46 @@ func run(pass *analysis.Pass) (any, error) {
 				continue
 			}
 
+			if len(assignStmt.Lhs) != 1 {
+				// if there are more than 1 assignment then we can do a shadow conflict with other variables
+				// so don't do anything beside simple error message
+				pass.Reportf(ident.Pos(), errMessage)
+				return
+			}
+
+			// else we know there is a simple err assignment like
+			// if err := func(); err != nil {}
+			// and we can autofix that
+
+			var buf bytes.Buffer
+			_ = printer.Fprint(&buf, pass.Fset, assignStmt)
+			assignText := buf.String()
+
 			// report usage of inline error assignment
-			pass.Reportf(
-				ident.Pos(),
-				"avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`",
-			)
+			pass.Report(analysis.Diagnostic{
+				Pos:     ident.Pos(),
+				End:     ident.End(),
+				Message: errMessage,
+				SuggestedFixes: []analysis.SuggestedFix{
+					{
+						Message: "move err assignment outside if",
+						TextEdits: []analysis.TextEdit{
+							{
+								// insert err := ... before if
+								Pos:     ifStmt.Pos(),
+								End:     ifStmt.Pos(),
+								NewText: []byte(assignText + "\n"),
+							},
+							{
+								// delete Init part
+								Pos:     assignStmt.Pos(),
+								End:     assignStmt.End() + 1, // +1 for ;
+								NewText: nil,
+							},
+						},
+					},
+				},
+			})
 		}
 	})
 
