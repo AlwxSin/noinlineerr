@@ -7,7 +7,7 @@ import (
 
 type MyAliasErr error
 
-type MyCustomError struct {}
+type MyCustomError struct{}
 
 func (mc *MyCustomError) Error() string {
 	return "error"
@@ -84,3 +84,22 @@ func invalid() error {
 
 	return nil
 }
+
+func errShadow() error {
+	var err error
+	if err := doSomething(); err != nil { // want "avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`"
+		return err
+	}
+	fmt.Println(err)
+
+	return nil
+}
+
+func naming() error {
+	if otherName := doSomething(); otherName != nil { // want "avoid inline error handling using `if err := ...; err != nil`; use plain assignment `err := ...`"
+		return otherName
+	}
+
+	return nil
+}
+
