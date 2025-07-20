@@ -54,6 +54,11 @@ func valid() error {
 		fmt.Println("ok")
 	}
 
+    var myErr MyAliasErr
+	if err, ok := myErr.(error); ok {
+		fmt.Println("ok", err)
+	}
+
 	return nil
 }
 
