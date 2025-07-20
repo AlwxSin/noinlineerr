@@ -52,6 +52,11 @@ func valid() error {
 	if ok, _ := strconv.ParseBool("1"); ok {
 		fmt.Println("ok")
 	}
+	
+	var myErr MyAliasErr
+	if err, ok := myErr.(error); ok {
+		fmt.Println("ok", err)
+	}
 
 	return nil
 }
