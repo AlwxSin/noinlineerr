@@ -52,7 +52,7 @@ func valid() error {
 	if ok, _ := strconv.ParseBool("1"); ok {
 		fmt.Println("ok")
 	}
-	
+
 	var myErr MyAliasErr
 	if err, ok := myErr.(error); ok {
 		fmt.Println("ok", err)
@@ -108,3 +108,18 @@ func naming() error {
 	return nil
 }
 
+func inlineErrReassign() error {
+	err := doSomething()
+	if err != nil {
+		return err
+	}
+
+	if err = doSomething2(); err != nil { // want "avoid inline error handling using `if err = ...; err != nil`; use plain assignment `err = ...`"
+		return err
+	}
+	return nil
+}
+
+func doSomething2() error {
+	return nil
+}

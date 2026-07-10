@@ -113,3 +113,20 @@ func naming() error {
 
     return nil
 }
+
+func inlineErrReassign() error {
+	err := doSomething()
+	if err != nil {
+		return err
+	}
+
+	err = doSomething2()
+	if err != nil { // want "avoid inline error handling using `if err = ...; err != nil`; use plain assignment `err = ...`"
+		return err
+	}
+	return nil
+}
+
+func doSomething2() error {
+	return nil
+}
