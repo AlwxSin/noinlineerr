@@ -117,9 +117,17 @@ func inlineErrReassign() error {
 	if err = doSomething2(); err != nil { // want "avoid inline error handling using `if err = ...; err != nil`; use plain assignment `err = ...`"
 		return err
 	}
+
+	if _, err = doSomething3(); err != nil { // want "avoid inline error handling using `if err = ...; err != nil`; use plain assignment `err = ...`"
+		return err
+	}
 	return nil
 }
 
 func doSomething2() error {
 	return nil
+}
+
+func doSomething3() (bool, error) {
+	return false, nil
 }

@@ -74,7 +74,7 @@ func inlineErrorInspector(pass *analysis.Pass) func(n ast.Node) {
 			// or there are any variables with same name
 			// then we can make a shadow conflict with other variables
 			// so don't do anything beside simple error message
-			if len(assignStmt.Lhs) != 1 || assignStmt.Tok == token.DEFINE && shadowVarsExists(ident.Name, pass.TypesInfo.Scopes[ifStmt]) {
+			if len(assignStmt.Lhs) != 1 || (assignStmt.Tok == token.DEFINE && shadowVarsExists(ident.Name, pass.TypesInfo.Scopes[ifStmt])) {
 				pass.Reportf(ident.Pos(), errMessage(assignStmt.Tok))
 				return
 			}
